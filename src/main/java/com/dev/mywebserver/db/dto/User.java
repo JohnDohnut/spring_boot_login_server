@@ -14,14 +14,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Data
 @Getter
 @Setter
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UID;
+    private Long uid;
 
     private String accId;
     private String accPw;
@@ -44,7 +43,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return accId;
+        return email;
     }
 
     @Override

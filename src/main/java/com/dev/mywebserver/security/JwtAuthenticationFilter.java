@@ -1,5 +1,8 @@
 package com.dev.mywebserver.security;
 
+import com.dev.mywebserver.db.dao.RefreshTokenRepository;
+import com.dev.mywebserver.db.dao.UserRepository;
+import com.dev.mywebserver.db.dto.User;
 import com.dev.mywebserver.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver handlerExceptionResolver;
+
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request
@@ -42,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // invalid header
             logger.debug("header error : " + authHeader);
             filterChain.doFilter(request, response);
-            return;
+
         }
         try{
             final String jwt = authHeader.substring(7);
@@ -51,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.debug("user Id : " + userId);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if(userId == null || authentication == null){
+            if(userId != null && authentication == null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
                 if(jwtService.isTokenValid(jwt, userDetails)){
@@ -64,7 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 else{
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
                 }
             }
             filterChain.doFilter(request, response);
@@ -76,4 +79,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
     }
+
+
 }

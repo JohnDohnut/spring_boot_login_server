@@ -1,4 +1,4 @@
-package com.dev.mywebserver.db.dto;
+package com.dev.mywebserver.message;
 
 
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class LoginUser {
+public class LoginRequest {
     private String id;
 
     private String password;
